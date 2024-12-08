@@ -1,0 +1,25 @@
+<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore-compat.js"></script>
+
+
+// Initialize Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBfq9SeLkVa2v4na6ffZpbf_u9kCUNLsXs",
+    authDomain: "syndicate-wallet.firebaseapp.com",
+    projectId: "syndicate-wallet",
+    storageBucket: "syndicate-wallet.firebasestorage.app",
+    messagingSenderId: "310290368185",
+    appId: "1:310290368185:web:51bc4628b5b60955ee7d68",
+    measurementId: "G-L1YBFYWWRN"
+};
+        
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+db.collection("users").doc(uname).set(userDetails)
+    .then(() => {
+        console.log("User added successfully!");
+    })
+    .catch((error) => {
+        console.error("Error adding user:", error);
+    });

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Syndicate Wallet</title>
+
+        <link rel="icon" href="icon.png" type="image/x-icon"/>
+        <link rel="stylesheet" href="styles.css">
+        
+        <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore-compat.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    </head>
+    <body>
+        <section id="terms">
+            <button onclick="closeTerms()">X</button>
+            
+            <span>Terms of Use for Syndicate</span>
+            
+            <br>
+            <br>
+            
+            <span>1. Acceptance of Terms</span>
+            <br>            
+            By accessing or using the Syndicate platform, you agree to be bound by these Terms of Use. If you disagree with any part of these Terms, please do not use the Platform.
+            <br>
+            <br>            
+            <span>2. Platform Purpose</span>
+            <br>
+            The Syndicate Platform is designed to facilitate financial transactions, specifically weekly deductions for maintenance purposes.
+            <br>
+            <br>
+            <span>3. Weekly Deductions</span>
+            <br>
+                • Authorization: By using the Platform, you authorize Syndicate to deduct a specified amount from your account on a weekly basis.<br>
+                • Processing Time: Please allow up to 24 hours for the deduction to be processed and reflected in your account.<br>
+                • Maintenance Fees: The deducted amount will be used for the maintenance and upkeep of the Platform and related services.
+            <br>
+            <br>
+            <span>4. Intellectual Property</span>
+            <br>
+            The Platform and its content, including but not limited to text, graphics, logos, images, and software, are the property of Syndicate or its licensors and are protected by copyright and other intellectual property laws.
+            <br>
+            <br>
+            <span>5. User Conduct</span>
+            <br>
+            You agree to use the Platform responsibly and ethically. You shall not:<br>
+                • Use the Platform for any illegal or unauthorized purpose.<br>
+                • Attempt to gain unauthorized access to the Platform or its systems.<br>
+                • Interfere with the operation of the Platform.<br>
+                • Violate any applicable laws or regulations.
+            <br>
+            <br>
+            <span>6. Limitation of Liability</span>
+            <br>
+            Syndicate shall not be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of the Platform.
+            <br>
+            <br>
+            <span>7. Modification of Terms</span>
+            <br>
+            Syndicate reserves the right to modify these Terms of Use at any time. Any changes will be effective immediately upon posting.
+            <br>
+            <br>
+            <span>8. Termination</span>
+            <br>
+            Syndicate may terminate your access to the Platform at any time, with or without cause.
+            <br>
+            <br>
+            <span>9. Contact Information</span>
+            <br>
+            For any questions or concerns, please contact us at +2348153659063(WhatsApp Chat Only).
+        </section>
+        
+        <section id="connect">
+            <div id="log">
+                <p>LOGIN</p>
+                <input type="password" id="logPIN" placeholder="Enter your 8-digit Pincode" inputmode="numeric" maxlength="8" pattern="[0-9]{8}">
+                <button onclick="chgLog()">Sign Up</button>
+            </div>
+
+            <div id="sign">
+                <p>SIGN UP</p>
+                <input type="text" id="fname" placeholder="Full Name">
+                <input type="text" id="uname" placeholder="Username">
+                <input type="text" id="pincode" placeholder="Enter your 8-digit Pincode" inputmode="numeric" maxlength="8" pattern="[0-9]{8}">
+                <br>
+                <span class="terms" onclick="openTerms()">Terms of use</span>
+                <br>
+                <button onclick="signup()"></button>
+                <br>
+                <button onclick="chgSign()">Login</button>
+            </div>
+        </div>
+
+        <section id="home">
+            <div class="top">
+                <span id="userBanner"></span>
+                <button onclick="openNotification()">
+                    <span class="new" id="new"></span>
+                    <svg fill="white" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,23a2,2,0,0,1-2-2h4A2,2,0,0,1,12,23ZM20,6a2,2,0,1,0-2,2A2,2,0,0,0,20,6Zm.707,11.293L19,15.586V10H17v6a1,1,0,0,0,.293.707l.293.293H6.414l.293-.293A1,1,0,0,0,7,16V10a4.98,4.98,0,0,1,5.912-4.912L14.5,3.5a.913.913,0,0,0-.168-.1A7,7,0,0,0,13,3.084V2a1,1,0,0,0-2,0V3.08A7,7,0,0,0,5,10v5.586L3.293,17.293A1,1,0,0,0,4,19H20a1,1,0,0,0,.707-1.707Z"/></svg>
+                </button>
+            </div>
+
+            <div class="money">
+                WALLET
+                <span id="totalMoney"></span>
+            </div>
+
+            <div class="nav">
+                <input type="radio" name="nav" id="assetsBtn">
+                <label for="assetsBtn">Assets</label>
+                <input type="radio" name="nav" id="transactionsBtn">
+                <label for="transactionsBtn">Transactions</label>
+                <div id="indicator"></div>
+            </div>
+
+            <div class="assetsTransactions">
+                <div id="asset">
+                    <ul id="assets">
+                        <li id="ngn" onclick="openWin('ngn')">
+                            <div class="assetImg">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M122.6 46.3c-7.8-11.7-22.4-17-35.9-12.9S64 49.9 64 64l0 192-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l32 0 0 128c0 17.7 14.3 32 32 32s32-14.3 32-32l0-128 100.2 0 97.2 145.8c7.8 11.7 22.4 17 35.9 12.9s22.7-16.5 22.7-30.6l0-128 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-32 0 0-192c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 192-57.5 0L122.6 46.3zM305.1 320l14.9 0 0 22.3L305.1 320zM185.5 256L128 256l0-86.3L185.5 256z"/></svg>
+                            </div>
+                            NGN
+                            <div class="converts">
+                                <span id="ast"></span>
+                                <span id="astCon"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="transaction">
+                    <ul id="transactions"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="notification">
+            <div class="mesHead">
+                <button onclick="closeNotification()"><</button>
+                <span>Notifications</span>
+            </div>
+
+            <ul id="notifs"></ul>
+        </section>
+        
+        <section id="crypto">
+            <button onclick="closeWin()"><</button>
+
+            <div class="total">
+                <span id="curr">NGN</span>
+                <span id="currTotal"></span>
+            </div>
+
+            <div class="winOpts">
+                <button onclick="openDeposit()">
+                    <svg fill="white" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4,20H20a1,1,0,0,1,0,2H4a1,1,0,0,1,0-2Zm9-3V5.414l2.293,2.293a1,1,0,0,0,1.414-1.414l-4-4a1,1,0,0,0-.325-.216.986.986,0,0,0-.764,0,1,1,0,0,0-.325.216l-4,4A1,1,0,1,0,8.707,7.707L11,5.414V17a1,1,0,0,0,2,0Z"/></svg>
+                    Deposit
+                </button>
+                <button onclick="openWithdraw()">
+                    <svg fill="#000000" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4,20H20a1,1,0,0,1,0,2H4a1,1,0,0,1,0-2ZM12,2a1,1,0,0,0-1,1V14.586L8.707,12.293a1,1,0,1,0-1.414,1.414l4,4a1,1,0,0,0,.325.216.986.986,0,0,0,.764,0,1,1,0,0,0,.325-.216l4-4a1,1,0,0,0-1.414-1.414L13,14.586V3A1,1,0,0,0,12,2Z"/></svg>
+                    Withdraw
+                </button>
+            </div>
+
+            <hr>
+
+            <ul id="inTransactions"></ul>
+
+            <section id="deposit">
+                <button onclick="closeDeposit()">X</button>
+                <div>
+                    <svg fill="white" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4,20H20a1,1,0,0,1,0,2H4a1,1,0,0,1,0-2Zm9-3V5.414l2.293,2.293a1,1,0,0,0,1.414-1.414l-4-4a1,1,0,0,0-.325-.216.986.986,0,0,0-.764,0,1,1,0,0,0-.325.216l-4,4A1,1,0,1,0,8.707,7.707L11,5.414V17a1,1,0,0,0,2,0Z"/></svg>
+                </div>
+                <div class="legend">
+                    <span>Bank Name</span>
+                    Opay
+                </div>
+                <div class="legend">
+                    <span>Account Name</span>
+                    Ezekwenna Godson
+                </div>
+                <div class="legend">
+                    <span>Account Number</span>
+                    610 529 3097
+                </div>
+                <div class="legend" id="depMemo"></div>
+
+                <p>Please send the money to the account details above, ensure to include the memo.</p>
+                <p>Note: May take upto 24 hours to verify.</p>
+
+                <button onclick="confirm(1)"></button>
+            </section>
+
+            <section id="withdraw">
+                <button onclick="closeWithdraw()">X</button>
+                Withdrawal will be available at the end of the term OR you can request from admin +2348153659063(WhatsApp Chat Only)
+            </section>
+        </section>
+
+        <section id="messages">
+            <p>Messages</p>
+            <hr>
+            <ul id="gMessages"></ul>
+            <div class="inpBar">
+                <input type="text" placeholder="Type message here.." id="txtMes">
+                <button onclick="sendMessage()">
+                    <svg width="800px" height="800px" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.265 4.42619C1.04293 2.87167 2.6169 1.67931 4.05323 2.31397L21.8341 10.1706C23.423 10.8727 23.423 13.1273 21.8341 13.8294L4.05323 21.686C2.6169 22.3207 1.04293 21.1283 1.265 19.5738L1.99102 14.4917C2.06002 14.0087 2.41458 13.6156 2.88791 13.4972L8.87688 12L2.88791 10.5028C2.41458 10.3844 2.06002 9.99129 1.99102 9.50829L1.265 4.42619ZM21.0257 12L3.2449 4.14335L3.89484 8.69294L12.8545 10.9328C13.9654 11.2106 13.9654 12.7894 12.8545 13.0672L3.89484 15.3071L3.2449 19.8566L21.0257 12Z" fill="white"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <section id="settings">
+            <p>Settings</p>
+
+            <span>
+                <span id="usr"></span>
+                <span id="usrName"></span>
+                <span id="status"></span>
+            </span>
+
+            <span>
+                <span id="currency">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M179.2 230.4l102.4 102.4-102.4 102.4L0 256 179.2 76.8l44.8 44.8-25.6 25.6-19.2-19.2-128 128 128 128 51.5-51.5-77.1-76.5 25.6-25.6zM332.8 76.8L230.4 179.2l102.4 102.4 25.6-25.6-77.1-76.5 51.5-51.5 128 128-128 128-19.2-19.2-25.6 25.6 44.8 44.8L512 256 332.8 76.8z"/></svg>
+                    </span>
+                    Currency <span>NGN/USD</span>
+                </span>
+
+                <span id="support" onclick="openSupport()">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .2-24.5 .6l-1.1-.6C142.3 114.6 128 98 128 80c0-44.2 86-80 192-80S512 35.8 512 80zM160.7 161.1c10.2-.7 20.7-1.1 31.3-1.1c62.2 0 117.4 12.3 152.5 31.4C369.3 204.9 384 221.7 384 240c0 4-.7 7.9-2.1 11.7c-4.6 13.2-17 25.3-35 35.5c0 0 0 0 0 0c-.1 .1-.3 .1-.4 .2c0 0 0 0 0 0s0 0 0 0c-.3 .2-.6 .3-.9 .5c-35 19.4-90.8 32-153.6 32c-59.6 0-112.9-11.3-148.2-29.1c-1.9-.9-3.7-1.9-5.5-2.9C14.3 274.6 0 258 0 240c0-34.8 53.4-64.5 128-75.4c10.5-1.5 21.4-2.7 32.7-3.5zM416 240c0-21.9-10.6-39.9-24.1-53.4c28.3-4.4 54.2-11.4 76.2-20.5c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 19.3-16.5 37.1-43.8 50.9c-14.6 7.4-32.4 13.7-52.4 18.5c.1-1.8 .2-3.5 .2-5.3zm-32 96c0 18-14.3 34.6-38.4 48c-1.8 1-3.6 1.9-5.5 2.9C304.9 404.7 251.6 416 192 416c-62.8 0-118.6-12.6-153.6-32C14.3 370.6 0 354 0 336l0-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 342.6 135.8 352 192 352s108.6-9.4 148.1-25.9c7.8-3.2 15.3-6.9 22.4-10.9c6.1-3.4 11.8-7.2 17.2-11.2c1.5-1.1 2.9-2.3 4.3-3.4l0 3.4 0 5.7 0 26.3zm32 0l0-32 0-25.9c19-4.2 36.5-9.5 52.1-16c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 10.5-5 21-14.9 30.9c-16.3 16.3-45 29.7-81.3 38.4c.1-1.7 .2-3.5 .2-5.3zM192 448c56.2 0 108.6-9.4 148.1-25.9c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 44.2-86 80-192 80S0 476.2 0 432l0-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 438.6 135.8 448 192 448z"/></svg>
+                    </span>
+                    Support
+                </span>
+            </span>
+
+            <span id="signout" onclick="logout()">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
+                </span>
+                Sign Out
+            </span>
+
+            <span>
+                <span class="logo">
+                    <svg width="170" height="280" viewBox="0 0 170 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_9_2)">
+                        <line x1="23.5377" y1="74.251" x2="98.5377" y2="1.25106" stroke="white" stroke-width="30"/>
+                        <line x1="112.257" y1="93.9247" x2="150.639" y2="54.532" stroke="white" stroke-width="30"/>
+                        <line x1="1.25656" y1="204.925" x2="39.6391" y2="165.532" stroke="white" stroke-width="30"/>
+                        <line x1="98.6158" y1="280.307" x2="6.07709" y2="189.002" stroke="white" stroke-width="30"/>
+                        <line x1="18.7111" y1="58.4989" x2="168.711" y2="211.499" stroke="white" stroke-width="30"/>
+                        <line x1="168.535" y1="190.678" x2="93.5352" y2="264.678" stroke="white" stroke-width="30"/>
+                        <line x1="78.4623" y1="0.251047" x2="153.462" y2="73.251" stroke="white" stroke-width="30"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_9_2">
+                        <rect width="170" height="280" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg>
+                </span>
+                SYNDICATE<br>Version 3.0
+            </span>
+
+            <section id="supportPage">
+                <button onclick="closeSupport()">X</button>
+                <div>Support</div>
+
+                <div class="legend">
+                    <span>Bank Name</span>
+                    Opay
+                </div>
+                <div class="legend">
+                    <span>Account Name</span>
+                    Ezekwenna Godson
+                </div>
+                <div class="legend">
+                    <span>Account Number</span>
+                    610 529 3097
+                </div>
+                <div class="legend" id="supportMemo"></div>
+                
+                <button onclick="confirm(2)"></button>
+            </section>
+
+            <div id="rate"></div>
+        </section>
+
+        <div id="btmNav">
+            <input type="radio" name="btm" id="homeBtn">
+            <label for="homeBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
+            </label>
+
+            <input type="radio" name="btm" id="messageBtn">
+            <label for="messageBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z"/></svg>
+            </label>
+
+            <input type="radio" name="btm" id="settingsBtn">
+            <label for="settingsBtn">
+                <svg width="800px" height="800px" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.84308 20.1979C9.8718 21.3993 10.8862 22 12 22C13.1138 22 14.1282 21.3993 16.1569 20.1979L16.8431 19.7915C18.8718 18.5901 19.8862 17.9894 20.4431 17C21 16.0106 21 14.8092 21 12.4063M20.8147 8C20.7326 7.62759 20.6141 7.3038 20.4431 7C19.8862 6.01057 18.8718 5.40987 16.8431 4.20846L16.1569 3.80211C14.1282 2.6007 13.1138 2 12 2C10.8862 2 9.8718 2.6007 7.84308 3.80211L7.15692 4.20846C5.1282 5.40987 4.11384 6.01057 3.55692 7C3 7.98943 3 9.19084 3 11.5937V12.4063C3 14.8092 3 16.0106 3.55692 17C3.78326 17.4021 4.08516 17.74 4.5 18.0802" stroke="none" stroke-width="0" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="3" stroke="#1C274C" stroke-width="2"/>
+                </svg>
+            </label>
+        </div>
+
+        <script src="app.js"></script>
+        <script>
+            // Initialize Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyBfq9SeLkVa2v4na6ffZpbf_u9kCUNLsXs",
+                authDomain: "syndicate-wallet.firebaseapp.com",
+                projectId: "syndicate-wallet",
+                storageBucket: "syndicate-wallet.firebasestorage.app",
+                messagingSenderId: "310290368185",
+                appId: "1:310290368185:web:51bc4628b5b60955ee7d68",
+                measurementId: "G-L1YBFYWWRN"
+            };
+        
+            const app = firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            (function(){
+                emailjs.init({
+                    publicKey: "5bhgLySQjRw7YQCc_",
+                });
+            })();
+        
+            // Fetch all documents from the "users" collection
+            function getNotifs() {
+                const notifLists = document.getElementById("notifs");
+                notifLists.innerHTML = ""; // Clear the list before fetching new data
+        
+                try {
+                    db.collection("announcements").get().then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            const user = doc.data();
+                            const notif = document.createElement("li");
+                            notif.innerHTML = `${user.text} <span>${user.timestamp}</span>`;
+                            notifLists.appendChild(notif);
+                        });
+                    });
+                } catch (error) {
+                    console.error("Error fetching users:", error);
+                }
+            }
+            getNotifs();
+
+            function loadTransactions() {            
+                try {
+                    // Fetch user transactions
+                    const querySnapshot = db.collection("users").get().then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            // Match logged-in user
+                            if (doc.data().uname === loggedUsr) {
+                                let transactions = [...doc.data().transactions];
+
+                                // Group transactions by month
+                                const groupedTransactions = transactions.reduce((acc, transaction) => {
+                                    const date = new Date(transaction.date);
+                                    const monthYear = date.toLocaleString("default", { month: "long", year: "numeric" });
+                        
+                                    if (!acc[monthYear]) {
+                                        acc[monthYear] = [];
+                                    }
+                        
+                                    acc[monthYear].push({
+                                        ...transaction,
+                                        time: `${date.getDate()} - ${date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`,
+                                    });
+                                    return acc;
+                                }, {});
+                        
+                                // Render grouped transactions to the DOM
+                                const container = document.getElementById("transactions");
+                                container.innerHTML = ""; // Clear previous content
+                        
+                                for (const [month, transactions] of Object.entries(groupedTransactions)) {
+                                    // Create and append month section
+                                    const monthDiv = document.createElement("div");
+                                    monthDiv.className = "ili";
+                        
+                                    const monthHeader = document.createElement("div");
+                                    monthHeader.textContent = month;
+                                    monthDiv.appendChild(monthHeader);
+                        
+                                    // Append transactions for the month
+                                    transactions.forEach((tx) => {
+                                        const li = document.createElement("li");
+                        
+                                        // Add SVG icon
+                                        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                                        svg.setAttribute("fill", "#000000");
+                                        svg.setAttribute("width", "20px");
+                                        svg.setAttribute("height", "20px");
+                                        svg.setAttribute("viewBox", "0 0 24 24");
+                        
+                                        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                                        path.setAttribute(
+                                            "d",
+                                            tx.amount < 0
+                                                ? "M6.293,17.707a1,1,0,0,1,1.414-1.414L11,19.586V2a1,1,0,0,1,2,0V19.586l3.293-3.293a1,1,0,0,1,1.414,1.414l-5,5a1,1,0,0,1-1.414,0Z"
+                                                : "M11.293,1.293a1,1,0,0,1,1.414,0l5,5a1,1,0,0,1-1.414,1.414L13,4.414V22a1,1,0,0,1-2,0V4.414L7.707,7.707A1,1,0,0,1,6.293,6.293Z"
+                                        );
+                                        svg.appendChild(path);
+                                        li.appendChild(svg);
+                        
+                                        // Add "NGN" text
+                                        const currency = document.createElement("span");
+                                        currency.textContent = "NGN";
+                                        li.appendChild(currency);
+                        
+                                        // Add amount and date
+                                        const price = document.createElement("span");
+                                        price.className = "price";
+                                        price.textContent = ` ${tx.amount.toFixed(2)}`;
+                        
+                                        const time = document.createElement("span");
+                                        time.className = "date";
+                                        time.style.marginLeft = "10px";
+                                        time.textContent = ` ${tx.time}`;
+                        
+                                        li.appendChild(price);
+                                        li.appendChild(time);
+                        
+                                        monthDiv.appendChild(li);
+                                    });
+                            
+                                    container.appendChild(monthDiv);
+                                }
+                            }
+                        });
+                
+                        if (transactions.length === 0) {
+                            console.warn("No transactions found for the logged-in user.");
+                            return;
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error loading transactions:", error);
+                }
+            }
+
+            function loadAssetTransactions() {            
+                try {
+                    // Fetch user transactions
+                    const querySnapshot = db.collection("users").get().then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            // Match logged-in user
+                            if (doc.data().uname === loggedUsr) {
+                                let transactions = [...doc.data().transactions];
+
+                                // Group transactions by month
+                                const groupedTransactions = transactions.reduce((acc, transaction) => {
+                                    const date = new Date(transaction.date);
+                                    const monthYear = date.toLocaleString("default", { month: "long", year: "numeric" });
+                        
+                                    if (!acc[monthYear]) {
+                                        acc[monthYear] = [];
+                                    }
+                        
+                                    acc[monthYear].push({
+                                        ...transaction,
+                                        time: `${date.getDate()} - ${date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`,
+                                    });
+                                    return acc;
+                                }, {});
+                        
+                                // Render grouped transactions to the DOM
+                                const container = document.getElementById("inTransactions");
+                                container.innerHTML = ""; // Clear previous content
+                        
+                                for (const [month, transactions] of Object.entries(groupedTransactions)) {
+                                    // Create and append month section
+                                    const monthDiv = document.createElement("div");
+                                    monthDiv.className = "ili";
+                        
+                                    const monthHeader = document.createElement("div");
+                                    monthHeader.textContent = month;
+                                    monthDiv.appendChild(monthHeader);
+                        
+                                    // Append transactions for the month
+                                    transactions.forEach((tx) => {
+                                        const li = document.createElement("li");
+                        
+                                        // Add SVG icon
+                                        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                                        svg.setAttribute("fill", "#000000");
+                                        svg.setAttribute("width", "20px");
+                                        svg.setAttribute("height", "20px");
+                                        svg.setAttribute("viewBox", "0 0 24 24");
+                        
+                                        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                                        path.setAttribute(
+                                            "d",
+                                            tx.amount < 0
+                                                ? "M6.293,17.707a1,1,0,0,1,1.414-1.414L11,19.586V2a1,1,0,0,1,2,0V19.586l3.293-3.293a1,1,0,0,1,1.414,1.414l-5,5a1,1,0,0,1-1.414,0Z"
+                                                : "M11.293,1.293a1,1,0,0,1,1.414,0l5,5a1,1,0,0,1-1.414,1.414L13,4.414V22a1,1,0,0,1-2,0V4.414L7.707,7.707A1,1,0,0,1,6.293,6.293Z"
+                                        );
+                                        svg.appendChild(path);
+                                        li.appendChild(svg);
+                        
+                                        // Add "NGN" text
+                                        const currency = document.createElement("span");
+                                        currency.textContent = "NGN";
+                                        li.appendChild(currency);
+                        
+                                        // Add amount and date
+                                        const price = document.createElement("span");
+                                        price.className = "price";
+                                        price.textContent = ` ${tx.amount.toFixed(2)}`;
+                        
+                                        const time = document.createElement("span");
+                                        time.className = "date";
+                                        time.style.marginLeft = "10px";
+                                        time.textContent = ` ${tx.time}`;
+                        
+                                        li.appendChild(price);
+                                        li.appendChild(time);
+                        
+                                        monthDiv.appendChild(li);
+                                    });
+                            
+                                    container.appendChild(monthDiv);
+                                }
+                            }
+                        });
+                
+                        if (transactions.length === 0) {
+                            console.warn("No transactions found for the logged-in user.");
+                            return;
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error loading transactions:", error);
+                }
+            }
+        </script>
+    </body>
+</html>

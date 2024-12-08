@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Dashboard</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: Arial, sans-serif;
+            }
+            
+            body {
+                background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+                color: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            
+            .dashboard {
+                width: 90%;
+                max-width: 1200px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 20px;
+                backdrop-filter: blur(10px);
+            }
+            
+            .dashboard-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+                color: #76c7c0;
+            }
+            
+            .dashboard-content {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .card {
+                flex: 1;
+                min-width: 300px;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            }
+            
+            .card h2 {
+                font-size: 1.5rem;
+                color: #76c7c0;
+                margin-bottom: 10px;
+            }
+            
+            .card label, .card p {
+                display: block;
+                margin: 10px 0;
+            }
+            
+            .card input, .card select, .card button {
+                width: 100%;
+                padding: 10px;
+                margin-top: 5px;
+                border: none;
+                border-radius: 5px;
+            }
+            
+            .card button {
+                background: #76c7c0;
+                color: #fff;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            
+            .card button:hover {
+                background: #5ba49e;
+            }      
+        </style>
+        <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore-compat.js"></script>
+    </head>
+    <body>
+        <div class="dashboard">
+            <header class="dashboard-header">
+            <h1>Admin Dashboard</h1>
+            </header>
+            <main class="dashboard-content">
+            <section class="card">
+                <h2>Weekly Deduction</h2>
+                <p>Deduct ₦50 from every user's account.</p>
+                <button id="deductBtn">Conduct Weekly Deduction</button>
+            </section>
+            <section class="card">
+                <h2>Add Transaction</h2>
+                <label for="userSelect">Select User:</label>
+                <select id="userSelect">
+                <!-- Options will be populated dynamically -->
+                </select>
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" placeholder="Enter amount">
+                <label for="currency">Currency:</label>
+                <input type="text" id="currency" value="NGN" readonly>
+                <button id="addTransactionBtn">Add Transaction</button>
+            </section>
+            </main>
+        </div>
+    
+        <script>
+            // Initialize Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyBfq9SeLkVa2v4na6ffZpbf_u9kCUNLsXs",
+                authDomain: "syndicate-wallet.firebaseapp.com",
+                projectId: "syndicate-wallet",
+                storageBucket: "syndicate-wallet.firebasestorage.app",
+                messagingSenderId: "310290368185",
+                appId: "1:310290368185:web:51bc4628b5b60955ee7d68",
+                measurementId: "G-L1YBFYWWRN"
+            };
+
+            const app = firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            // Populate Users in Dropdown
+            const userSelect = document.getElementById("userSelect");
+
+            function populateUsers() {
+                db.collection("users").get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const option = document.createElement("option");
+                        option.value = doc.data().uname;
+                        option.textContent = doc.data().uname;
+                        userSelect.appendChild(option);
+                    });
+                });
+            }
+            populateUsers();
+
+            // Weekly Deduction Function
+            const deductBtn = document.getElementById("deductBtn");
+            deductBtn.addEventListener("click", async () => {
+                db.collection("users").get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        let newTran = {
+                            amount: -50,
+                            currency: "NGN",
+                            date: new Date().toISOString()
+                        }
+                        db.collection("users").doc(doc.data().uname).update({
+                            amount: doc.data().amount - 50,
+                            transactions: firebase.firestore.FieldValue.arrayUnion(newTran)
+                        }).then(() => {
+                            alert("Successfully collected maintenance fees!")
+                        })
+                    })
+                })
+            });
+
+            // Add Transaction Function
+            const addTransactionBtn = document.getElementById("addTransactionBtn");
+            addTransactionBtn.addEventListener("click", () => {
+                const userId = userSelect.value;
+                const inpAmount = parseFloat(document.getElementById("amount").value);
+                const currency = document.getElementById("currency").value;
+                const date = new Date().toISOString();
+
+                if (!userId || !inpAmount || !currency || !date) {
+                    alert("All fields are required!");
+                }
+                
+                db.collection("users").get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        if ( doc.data().uname === userId ) {
+                            if ( String(inpAmount).charAt(0) === "-" ) {
+                                let newAmt = (doc.data().amount - Math.abs(inpAmount));
+                                let trans = {
+                                    amount: inpAmount,
+                                    currency: "NGN",
+                                    date: new Date().toISOString()
+                                }
+                                db.collection("users").doc(userId).update({
+                                    amount: newAmt,
+                                    transactions: firebase.firestore.FieldValue.arrayUnion(trans)
+                                }).then(() => {
+                                    console.log("Appended");
+                                    document.getElementById("amount").value = "";
+                                })
+                            } else {
+                                let newAmt = (doc.data().amount + inpAmount);
+                                let trans = {
+                                    amount: inpAmount,
+                                    currency: "NGN",
+                                    date: new Date().toISOString()
+                                }
+                                db.collection("users").doc(userId).update({
+                                    amount: newAmt,
+                                    transactions: firebase.firestore.FieldValue.arrayUnion(trans)
+                                }).then(() => {
+                                    console.log("Appended");
+                                    document.getElementById("amount").value = "";
+                                })
+                            }
+                        }
+                    })
+                })
+            });
+        </script>
+    </body>
+</html>
